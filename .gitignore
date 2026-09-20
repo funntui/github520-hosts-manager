@@ -1,0 +1,11 @@
+# hosts 备份文件（脚本自动生成，不入库）
+hosts.bak_*
+*.bak
+
+# 操作系统 / 编辑器
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+.idea/
+.vscode/
