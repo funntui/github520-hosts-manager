@@ -1,66 +1,30 @@
 @echo off
 chcp 936 >nul 2>&1
-title GitHub520 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-powershell -NoProfile -Command "if(-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){exit 1}"
+title GitHub520 ¿ª»ú×ÔÆôÉèÖÃ
+net session >nul 2>&1
 if errorlevel 1 (
-    echo ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ô±È¨ï¿½Þ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½Ç¡ï¿½...
-    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
-    exit /b
+  powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
+  exit /b
 )
+echo GitHub520 ¿ª»ú×ÔÆô²Ëµ¥
+echo ========================
+echo  [1] ¿ªÆô¿ª»ú×Ô¶¯¸üÐÂ
+echo  [2] ¹Ø±Õ¿ª»ú×Ô¶¯¸üÐÂ
+echo  [3] ²é¿´µ±Ç°×´Ì¬
+echo  [0] ÍË³ö
 echo.
-echo ===== GitHub520 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ =====
-echo.
-echo   [1] ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â£ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½
-echo   [2] ï¿½Ø±Õ¿ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½
-echo   [3] ï¿½é¿´ï¿½ï¿½Ç°×´Ì¬
-echo.
-set /p choice=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ (1/2/3): 
-
-set "SCRIPT=%~dp0GitHub520ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½ï¿½.bat"
-set "TASK=GitHub520_AutoUpdate"
-
-if "%choice%"=="1" goto install
-if "%choice%"=="2" goto uninstall
-if "%choice%"=="3" goto status
-echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
-pause
-exit /b
-
-:install
-echo.
-echo ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ï¿½...
-schtasks /Create /TN "%TASK%" /TR "'%SCRIPT%'" /SC ONLOGON /RL HIGHEST /F
-if %errorlevel%==0 (
-    echo.
-    echo ï¿½Ñ¿ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½Î¿ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½Â¡ï¿½
-) else (
-    echo ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %errorlevel%
+set /p choice=ÇëÑ¡Ôñ: 
+if "%choice%"=="1" (
+  schtasks /create /tn "GitHub520AutoUpdate" /tr "cmd /c cd /d ""%~dp0"" && GitHub520ÖÇÄÜ¸üÐÂ.bat" /sc onlogon /rl highest /f
+  echo ÒÑ¿ªÆô£¡
+)
+if "%choice%"=="2" (
+  schtasks /delete /tn "GitHub520AutoUpdate" /f
+  echo ÒÑ¹Ø±Õ£¡
+)
+if "%choice%"=="3" (
+  schtasks /query /tn "GitHub520AutoUpdate" 2>nul
+  if errorlevel 1 echo Î´ÉèÖÃ¿ª»ú×ÔÆô
 )
 echo.
 pause
-exit /b
-
-:uninstall
-echo.
-schtasks /Delete /TN "%TASK%" /F
-if %errorlevel%==0 (
-    echo ï¿½Ñ¹Ø±Õ¿ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â¡ï¿½
-) else (
-    echo Î´ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½Ê§ï¿½Ü¡ï¿½
-)
-echo.
-pause
-exit /b
-
-:status
-echo.
-schtasks /Query /TN "%TASK%" 2>nul
-if %errorlevel%==0 (
-    echo.
-    echo ×´Ì¬: ï¿½Ñ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½
-) else (
-    echo ×´Ì¬: Î´ï¿½ï¿½ï¿½ï¿½
-)
-echo.
-pause
-exit /b

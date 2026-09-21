@@ -1,86 +1,12 @@
 @echo off
 chcp 936 >nul 2>&1
-title GitHub520 ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½Â£ï¿½ï¿½Ô¶ï¿½Ñ¡ï¿½ï¿½ï¿½ IPï¿½ï¿½
-powershell -NoProfile -Command "if(-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){exit 1}"
+title GitHub520 ÖÇÄÜ¸üÐÂ£¨×Ô¶¯Ñ¡×î¿ìIP£©
+net session >nul 2>&1
 if errorlevel 1 (
-    echo ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ô±È¨ï¿½Þ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½Ç¡ï¿½...
-    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
-    exit /b
+  powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
+  exit /b
 )
-echo ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½ï¿½ GitHub520 hosts ...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "
-$ErrorActionPreference='Stop'
-$hostsPath='C:\Windows\System32\drivers\etc\hosts'
-$tmpPath=Join-Path $env:TEMP 'gh520_download.txt'
-Remove-Item $tmpPath -Force -ErrorAction SilentlyContinue
-
-# --- 1. ï¿½ï¿½ï¿½ï¿½ GitHub520 hosts ---
-$urls=@('https://raw.hellogithub.com/hosts','https://raw.githubusercontent.com/521xueweihan/GitHub520/main/hosts')
-$downloaded=$false
-foreach($url in $urls){
-  try{
-    Write-Host ('ï¿½ï¿½ï¿½ï¿½: ' + $url)
-    curl.exe -L -sS --connect-timeout 15 --max-time 60 -o $tmpPath $url
-    if($LASTEXITCODE -eq 0 -and (Test-Path $tmpPath)){
-      $content=[IO.File]::ReadAllText($tmpPath,(New-Object Text.UTF8Encoding $false))
-      $content=$content.TrimStart([char]0xFEFF).Trim()
-      if($content -match '#\s*GitHub520\s+Host\s+Start' -and $content -match '#\s*GitHub520\s+Host\s+End'){
-        $downloaded=$true
-        Write-Host ('ï¿½ï¿½ï¿½Ø³É¹ï¿½')
-        break
-      }
-    }
-  } catch { Write-Host ('ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½: ' + $_.Exception.Message) }
-}
-if(-not $downloaded){ Write-Host 'ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½hosts Î´ï¿½Þ¸Ä¡ï¿½' -ForegroundColor Red; exit 1 }
-
-# --- 2. ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½ github.com ï¿½ï¿½Ñ¡ IPï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ ---
-Write-Host 'ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ github.com ï¿½ï¿½Ñ¡ IP...'
-$candidates=@('140.82.112.25','140.82.112.26','140.82.113.21','140.82.114.21','140.82.114.22','140.82.116.3','140.82.116.4','140.82.113.3')
-$best=$null; $bestTime=9999
-foreach($ip in $candidates){
-  try{
-    $tcp=New-Object Net.Sockets.TcpClient
-    $iar=$tcp.BeginConnect($ip,443,$null,$null)
-    if(-not $iar.AsyncWaitHandle.WaitOne(2000) -or -not $tcp.Connected){ $tcp.Close(); continue }
-    $tcp.Close()
-    $sw=[Diagnostics.Stopwatch]::StartNew()
-    $code = curl.exe -sS --resolve github.com:443:$ip -o NUL -w '%{http_code}' --connect-timeout 3 --max-time 6 https://github.com/ 2>$null
-    $sw.Stop()
-    if($code -eq '200' -and $sw.Elapsed.TotalSeconds -lt $bestTime){
-      $best=$ip; $bestTime=$sw.Elapsed.TotalSeconds
-      Write-Host ('  ' + $ip + ' -> HTTP ' + $code + ', ' + [int]$sw.Elapsed.TotalMilliseconds + 'ms  [ï¿½ï¿½Ç°ï¿½ï¿½ï¿½]')
-    } else {
-      Write-Host ('  ' + $ip + ' -> HTTP ' + $code + ', ' + [int]$sw.Elapsed.TotalMilliseconds + 'ms')
-    }
-  } catch {}
-}
-if($best){
-  Write-Host ('Ñ¡ï¿½ï¿½ github.com IP: ' + $best + ' (' + [int]($bestTime*1000) + 'ms)')
-  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ github.com ï¿½ï¿½ï¿½æ»»Îªï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ IP
-  $content = ($content -split '\r?\n' | ForEach-Object {
-    if($_ -match '^\s*\d+\.\d+\.\d+\.\d+\s+(www\.)?github\.com\s*$'){
-      ($best + '                 github.com')
-    } else { $_ }
-  }) -join "`r`n"
-} else {
-  Write-Host 'ï¿½ï¿½ï¿½Ðºï¿½Ñ¡ IP ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½Ä¬ï¿½Ï¼ï¿½Â¼ï¿½ï¿½' -ForegroundColor Yellow
-}
-
-# --- 3. ï¿½ï¿½ï¿½Ý²ï¿½Ð´ï¿½ï¿½ ---
-$ts=Get-Date -Format 'yyyyMMdd_HHmmss'
-$backup=$hostsPath + '.bak_' + $ts
-Copy-Item -Path $hostsPath -Destination $backup -Force
-Write-Host ('ï¿½Ñ±ï¿½ï¿½ï¿½: ' + $backup)
-$old=[IO.File]::ReadAllText($hostsPath,(New-Object Text.UTF8Encoding $false))
-$pattern='(?si)#\s*GitHub520\s+Host\s+Start.*?#\s*GitHub520\s+Host\s+End'
-$cleaned=[regex]::Replace($old,$pattern,'').TrimEnd()
-$newContent=$cleaned + [Environment]::NewLine + $content + [Environment]::NewLine
-[IO.File]::WriteAllText($hostsPath,$newContent,(New-Object Text.UTF8Encoding $false))
-Remove-Item $tmpPath -Force -ErrorAction SilentlyContinue
-ipconfig /flushdns | Out-Null
-Write-Host 'ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½DNS ï¿½ï¿½Ë¢ï¿½Â¡ï¿½' -ForegroundColor Green
-"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$hostsPath='C:\Windows\System32\drivers\etc\hosts'; $tmp=Join-Path $env:TEMP 'gh520.txt'; curl.exe -L -sS --connect-timeout 15 --max-time 60 -o $tmp 'https://raw.hellogithub.com/hosts'; $content=[IO.File]::ReadAllText($tmp,(New-Object Text.UTF8Encoding $false)).TrimStart([char]0xFEFF).Trim(); $cands=@('140.82.112.25','140.82.112.26','140.82.113.21','140.82.114.21','140.82.114.22','140.82.116.3','140.82.116.4','20.205.243.166'); $best=$null; $bestMs=99999; foreach($ip in $cands){$code=curl.exe -sS --resolve github.com:443:$ip -o NUL -w '%{http_code}' --connect-timeout 2 --max-time 5 https://github.com/ 2>$null; if($code -eq '200'){$ms=[int]((curl.exe -sS --resolve github.com:443:$ip -o NUL -w '%{time_total}' --connect-timeout 2 --max-time 5 https://github.com/ 2>$null)*1000); if($ms -lt $bestMs){$best=$ip;$bestMs=$ms}; Write-Host ('  '+$ip+' -> HTTP '+$code+', '+$ms+'ms')}}; if($best){Write-Host ('Ñ¡ÖÐ: '+$best+' ('+$bestMs+'ms)') -ForegroundColor Green; $content=($content -split '\r?\n' | ForEach-Object {if($_ -match '^\s*\d+\.\d+\.\d+\.\d+\s+github\.com\s*$'){$best+'                 github.com'}else{$_}}) -join '\r\n'}else{Write-Host 'ÎÞ¿ÉÓÃIP£¬Ê¹ÓÃÄ¬ÈÏ¼ÇÂ¼' -ForegroundColor Yellow}; $ts=Get-Date -Format 'yyyyMMdd_HHmmss'; Copy-Item $hostsPath ($hostsPath+'.bak_'+$ts) -Force; $old=[IO.File]::ReadAllText($hostsPath,(New-Object Text.UTF8Encoding $false)); $cleaned=[regex]::Replace($old,'#\s*GitHub520\s+Host\s+Start.*?#\s*GitHub520\s+Host\s+End','','Singleline').TrimEnd(); [IO.File]::WriteAllText($hostsPath,$cleaned+[Environment]::NewLine+$content+[Environment]::NewLine,(New-Object Text.UTF8Encoding $false)); Remove-Item $tmp -Force; ipconfig /flushdns | Out-Null; Write-Host 'ÖÇÄÜ¸üÐÂÍê³É£¡' -ForegroundColor Green"
 echo.
-echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½
+echo °´ÈÎÒâ¼üÍË³ö...
 pause >nul

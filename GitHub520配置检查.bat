@@ -1,45 +1,7 @@
 @echo off
 chcp 936 >nul 2>&1
-title GitHub520 hosts ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½
-powershell -NoProfile -ExecutionPolicy Bypass -Command "
-$hostsPath='C:\Windows\System32\drivers\etc\hosts'
-if(-not (Test-Path $hostsPath)){
-  Write-Host ('Î´ï¿½Òµï¿½ hosts ï¿½Ä¼ï¿½: ' + $hostsPath) -ForegroundColor Red
-  exit 1
-}
-$old=[IO.File]::ReadAllText($hostsPath,(New-Object Text.UTF8Encoding $false))
-$pattern='(?si)#\s*GitHub520\s+Host\s+Start.*?#\s*GitHub520\s+Host\s+End'
-$m=[regex]::Match($old,$pattern)
-Write-Host '=============================================='
-if(-not $m.Success){
-  Write-Host 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç° hosts ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¡ï¿½GitHub520 ï¿½ï¿½ï¿½Ã¡ï¿½' -ForegroundColor Yellow
-  Write-Host 'ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½GitHub520Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½hosts.batï¿½ï¿½ï¿½ï¿½Ó¡ï¿½'
-} else {
-  Write-Host 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç° hosts ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½Ú¡ï¿½GitHub520 ï¿½ï¿½ï¿½Ã¡ï¿½' -ForegroundColor Green
-  $block=$m.Value
-  $lines=@($block -split '\r?\n' | Where-Object { $_ -match '^\s*\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\s' })
-  Write-Host ('IP ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½: ' + $lines.Count)
-  $timeLine=@($block -split '\r?\n' | Where-Object { $_ -match 'Update time' } | Select-Object -First 1)
-  if($timeLine.Count -gt 0 -and $timeLine[0]){ Write-Host ($timeLine[0].Trim()) }
-  $domains=@()
-  foreach($ln in $lines){
-    $parts=@($ln -split '\s+' | Where-Object { $_ -ne '' })
-    if($parts.Count -ge 2){
-      for($i=1;$i -lt $parts.Count;$i++){ $domains += $parts[$i] }
-    }
-  }
-  $uniq=@($domains | Sort-Object -Unique)
-  Write-Host ('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ' + $uniq.Count)
-  $key=@('github.com','api.github.com','codeload.github.com','raw.githubusercontent.com','gist.github.com','github.githubassets.com','objects.githubusercontent.com')
-  $missing=@($key | Where-Object { $uniq -notcontains $_ })
-  if($missing.Count -eq 0){
-    Write-Host 'ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½' -ForegroundColor Green
-  } else {
-    Write-Host ('ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½È±Ê§: ' + ($missing -join ', ')) -ForegroundColor Yellow
-  }
-}
-Write-Host '=============================================='
-"
+title GitHub520 ÅäÖÃ¼ì²é
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$hostsPath='C:\Windows\System32\drivers\etc\hosts'; if(-not(Test-Path $hostsPath)){Write-Host 'Î´ÕÒµ½ hosts ÎÄ¼þ' -ForegroundColor Red; exit 1}; $old=[IO.File]::ReadAllText($hostsPath,(New-Object Text.UTF8Encoding $false)); $m=[regex]::Match($old,'#\s*GitHub520\s+Host\s+Start.*?#\s*GitHub520\s+Host\s+End','Singleline'); Write-Host '=============================================='; if(-not $m.Success){Write-Host 'µ±Ç° hosts Ã»ÓÐ GitHub520 ÅäÖÃ' -ForegroundColor Yellow; Write-Host '½¨ÒéÏÈË«»÷ÔËÐÐ GitHub520Ò»¼ü¸üÐÂhosts.bat'}else{Write-Host 'µ±Ç° hosts ÒÑÓÐ GitHub520 ÅäÖÃ' -ForegroundColor Green; $lines=@($m.Value -split '\r?\n' | Where-Object {$_ -match '^\s*\d+\.\d+\.\d+\.\d+\s'}); Write-Host ('IP ¼ÇÂ¼ÌõÊý: '+$lines.Count); Write-Host ('¸²¸ÇÓòÃûÊý: '+@($m.Value -split '\r?\n' | Where-Object {$_ -match 'github'}).Count)}; Write-Host '=============================================='
 echo.
-echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½
+echo °´ÈÎÒâ¼üÍË³ö...
 pause >nul
