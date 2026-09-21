@@ -1,45 +1,45 @@
 @echo off
 chcp 936 >nul 2>&1
-title GitHub520 hosts Ò»¼üÇåÀí
+title GitHub520 hosts Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 powershell -NoProfile -Command "if(-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){exit 1}"
 if errorlevel 1 (
-    echo ÐèÒª¹ÜÀíÔ±È¨ÏÞ£¬ÕýÔÚÇëÇóÌáÉý£¬ÇëÔÚµ¯´°ÖÐµã»÷¡°ÊÇ¡±...
+    echo ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ô±È¨ï¿½Þ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½Ç¡ï¿½...
     powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
     exit /b
 )
-echo ¿ªÊ¼ÇåÀí hosts ÖÐµÄ GitHub520 ¼ÇÂ¼ ...
+echo ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ hosts ï¿½Ðµï¿½ GitHub520 ï¿½ï¿½Â¼ ...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "
 $ErrorActionPreference='Stop'
 $hostsPath='C:\Windows\System32\drivers\etc\hosts'
 try{
   $old=[IO.File]::ReadAllText($hostsPath,(New-Object Text.UTF8Encoding $false))
 } catch {
-  Write-Host ('¶ÁÈ¡ hosts Ê§°Ü: ' + $_.Exception.Message) -ForegroundColor Red
+  Write-Host ('ï¿½ï¿½È¡ hosts Ê§ï¿½ï¿½: ' + $_.Exception.Message) -ForegroundColor Red
   exit 1
 }
 $pattern='(?si)#\s*GitHub520\s+Host\s+Start.*?#\s*GitHub520\s+Host\s+End'
 $m=[regex]::Match($old,$pattern)
 if(-not $m.Success){
-  Write-Host 'µ±Ç° hosts ÖÐ²»´æÔÚ GitHub520 ÅäÖÃ£¬ÎÞÐèÇåÀí¡£' -ForegroundColor Yellow
+  Write-Host 'ï¿½ï¿½Ç° hosts ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ GitHub520 ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½' -ForegroundColor Yellow
   exit 0
 }
 $ts=Get-Date -Format 'yyyyMMdd_HHmmss'
 $backup=$hostsPath + '.bak_' + $ts
 Copy-Item -Path $hostsPath -Destination $backup -Force
-Write-Host ('ÒÑ±¸·ÝÔ­ hosts µ½: ' + $backup)
+Write-Host ('ï¿½Ñ±ï¿½ï¿½ï¿½Ô­ hosts ï¿½ï¿½: ' + $backup)
 $removedLines=@($m.Value -split '\r?\n').Count
 $cleaned=[regex]::Replace($old,$pattern,'').TrimEnd()
 [IO.File]::WriteAllText($hostsPath,$cleaned + [Environment]::NewLine,(New-Object Text.UTF8Encoding $false))
-Write-Host ('ÒÑÇå³ý GitHub520 ¼ÇÂ¼£¬¹²É¾³ý ' + $removedLines + ' ÐÐ¡£') -ForegroundColor Green
-Write-Host 'Ð´ÈëÍê³É£¬ÕýÔÚË¢ÐÂ DNS »º´æ...'
+Write-Host ('ï¿½ï¿½ï¿½ï¿½ï¿½ GitHub520 ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ' + $removedLines + ' ï¿½Ð¡ï¿½') -ForegroundColor Green
+Write-Host 'Ð´ï¿½ï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½ DNS ï¿½ï¿½ï¿½ï¿½...'
 "
 if errorlevel 1 goto :fail
 ipconfig /flushdns
 echo.
-echo ÇåÀíÍê³É£¡°´ÈÎÒâ¼üÍË³ö¡£
+echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½
 pause >nul
 exit /b
 :fail
 echo.
-echo ²Ù×÷Ê§°Ü£¬Çë¼ì²éºóÖØÊÔ¡£°´ÈÎÒâ¼üÍË³ö¡£
+echo ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½
 pause >nul

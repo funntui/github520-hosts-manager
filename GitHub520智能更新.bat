@@ -1,41 +1,41 @@
 @echo off
 chcp 936 >nul 2>&1
-title GitHub520 ÖÇÄÜ¸üÐÂ£¨×Ô¶¯Ñ¡×î¿ì IP£©
+title GitHub520 ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½Â£ï¿½ï¿½Ô¶ï¿½Ñ¡ï¿½ï¿½ï¿½ IPï¿½ï¿½
 powershell -NoProfile -Command "if(-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){exit 1}"
 if errorlevel 1 (
-    echo ÐèÒª¹ÜÀíÔ±È¨ÏÞ£¬ÕýÔÚÇëÇóÌáÉý£¬ÇëÔÚµ¯´°ÖÐµã»÷¡°ÊÇ¡±...
+    echo ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ô±È¨ï¿½Þ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½Ç¡ï¿½...
     powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
     exit /b
 )
-echo ¿ªÊ¼ÖÇÄÜ¸üÐÂ GitHub520 hosts ...
+echo ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½ï¿½ GitHub520 hosts ...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "
 $ErrorActionPreference='Stop'
 $hostsPath='C:\Windows\System32\drivers\etc\hosts'
 $tmpPath=Join-Path $env:TEMP 'gh520_download.txt'
 Remove-Item $tmpPath -Force -ErrorAction SilentlyContinue
 
-# --- 1. ÏÂÔØ GitHub520 hosts ---
+# --- 1. ï¿½ï¿½ï¿½ï¿½ GitHub520 hosts ---
 $urls=@('https://raw.hellogithub.com/hosts','https://raw.githubusercontent.com/521xueweihan/GitHub520/main/hosts')
 $downloaded=$false
 foreach($url in $urls){
   try{
-    Write-Host ('ÏÂÔØ: ' + $url)
+    Write-Host ('ï¿½ï¿½ï¿½ï¿½: ' + $url)
     curl.exe -L -sS --connect-timeout 15 --max-time 60 -o $tmpPath $url
     if($LASTEXITCODE -eq 0 -and (Test-Path $tmpPath)){
       $content=[IO.File]::ReadAllText($tmpPath,(New-Object Text.UTF8Encoding $false))
       $content=$content.TrimStart([char]0xFEFF).Trim()
       if($content -match '#\s*GitHub520\s+Host\s+Start' -and $content -match '#\s*GitHub520\s+Host\s+End'){
         $downloaded=$true
-        Write-Host ('ÏÂÔØ³É¹¦')
+        Write-Host ('ï¿½ï¿½ï¿½Ø³É¹ï¿½')
         break
       }
     }
-  } catch { Write-Host ('ÏÂÔØÊ§°Ü: ' + $_.Exception.Message) }
+  } catch { Write-Host ('ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½: ' + $_.Exception.Message) }
 }
-if(-not $downloaded){ Write-Host 'ÏÂÔØÊ§°Ü£¬hosts Î´ÐÞ¸Ä¡£' -ForegroundColor Red; exit 1 }
+if(-not $downloaded){ Write-Host 'ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½hosts Î´ï¿½Þ¸Ä¡ï¿½' -ForegroundColor Red; exit 1 }
 
-# --- 2. ²âËÙ¶à¸ö github.com ºòÑ¡ IP£¬Ñ¡×î¿ìµÄ ---
-Write-Host 'ÕýÔÚ²âËÙ github.com ºòÑ¡ IP...'
+# --- 2. ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½ github.com ï¿½ï¿½Ñ¡ IPï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ ---
+Write-Host 'ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ github.com ï¿½ï¿½Ñ¡ IP...'
 $candidates=@('140.82.112.25','140.82.112.26','140.82.113.21','140.82.114.21','140.82.114.22','140.82.116.3','140.82.116.4','140.82.113.3')
 $best=$null; $bestTime=9999
 foreach($ip in $candidates){
@@ -49,29 +49,29 @@ foreach($ip in $candidates){
     $sw.Stop()
     if($code -eq '200' -and $sw.Elapsed.TotalSeconds -lt $bestTime){
       $best=$ip; $bestTime=$sw.Elapsed.TotalSeconds
-      Write-Host ('  ' + $ip + ' -> HTTP ' + $code + ', ' + [int]$sw.Elapsed.TotalMilliseconds + 'ms  [µ±Ç°×î¿ì]')
+      Write-Host ('  ' + $ip + ' -> HTTP ' + $code + ', ' + [int]$sw.Elapsed.TotalMilliseconds + 'ms  [ï¿½ï¿½Ç°ï¿½ï¿½ï¿½]')
     } else {
       Write-Host ('  ' + $ip + ' -> HTTP ' + $code + ', ' + [int]$sw.Elapsed.TotalMilliseconds + 'ms')
     }
   } catch {}
 }
 if($best){
-  Write-Host ('Ñ¡ÖÐ github.com IP: ' + $best + ' (' + [int]($bestTime*1000) + 'ms)')
-  # °ÑÏÂÔØÄÚÈÝÀïµÄ github.com ÐÐÌæ»»Îª²âËÙÑ¡³öµÄ IP
+  Write-Host ('Ñ¡ï¿½ï¿½ github.com IP: ' + $best + ' (' + [int]($bestTime*1000) + 'ms)')
+  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ github.com ï¿½ï¿½ï¿½æ»»Îªï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ IP
   $content = ($content -split '\r?\n' | ForEach-Object {
     if($_ -match '^\s*\d+\.\d+\.\d+\.\d+\s+(www\.)?github\.com\s*$'){
       ($best + '                 github.com')
     } else { $_ }
   }) -join "`r`n"
 } else {
-  Write-Host 'ËùÓÐºòÑ¡ IP ¾ù²»Í¨£¬Ê¹ÓÃÏÂÔØµÄÄ¬ÈÏ¼ÇÂ¼¡£' -ForegroundColor Yellow
+  Write-Host 'ï¿½ï¿½ï¿½Ðºï¿½Ñ¡ IP ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½Ä¬ï¿½Ï¼ï¿½Â¼ï¿½ï¿½' -ForegroundColor Yellow
 }
 
-# --- 3. ±¸·Ý²¢Ð´Èë ---
+# --- 3. ï¿½ï¿½ï¿½Ý²ï¿½Ð´ï¿½ï¿½ ---
 $ts=Get-Date -Format 'yyyyMMdd_HHmmss'
 $backup=$hostsPath + '.bak_' + $ts
 Copy-Item -Path $hostsPath -Destination $backup -Force
-Write-Host ('ÒÑ±¸·Ý: ' + $backup)
+Write-Host ('ï¿½Ñ±ï¿½ï¿½ï¿½: ' + $backup)
 $old=[IO.File]::ReadAllText($hostsPath,(New-Object Text.UTF8Encoding $false))
 $pattern='(?si)#\s*GitHub520\s+Host\s+Start.*?#\s*GitHub520\s+Host\s+End'
 $cleaned=[regex]::Replace($old,$pattern,'').TrimEnd()
@@ -79,8 +79,8 @@ $newContent=$cleaned + [Environment]::NewLine + $content + [Environment]::NewLin
 [IO.File]::WriteAllText($hostsPath,$newContent,(New-Object Text.UTF8Encoding $false))
 Remove-Item $tmpPath -Force -ErrorAction SilentlyContinue
 ipconfig /flushdns | Out-Null
-Write-Host 'ÖÇÄÜ¸üÐÂÍê³É£¬DNS ÒÑË¢ÐÂ¡£' -ForegroundColor Green
+Write-Host 'ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½DNS ï¿½ï¿½Ë¢ï¿½Â¡ï¿½' -ForegroundColor Green
 "
 echo.
-echo °´ÈÎÒâ¼üÍË³ö¡£
+echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½
 pause >nul

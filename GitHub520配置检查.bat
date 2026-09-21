@@ -1,10 +1,10 @@
 @echo off
 chcp 936 >nul 2>&1
-title GitHub520 hosts ÅäÖÃ¼ì²é
+title GitHub520 hosts ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½
 powershell -NoProfile -ExecutionPolicy Bypass -Command "
 $hostsPath='C:\Windows\System32\drivers\etc\hosts'
 if(-not (Test-Path $hostsPath)){
-  Write-Host ('Î´ÕÒµ½ hosts ÎÄ¼þ: ' + $hostsPath) -ForegroundColor Red
+  Write-Host ('Î´ï¿½Òµï¿½ hosts ï¿½Ä¼ï¿½: ' + $hostsPath) -ForegroundColor Red
   exit 1
 }
 $old=[IO.File]::ReadAllText($hostsPath,(New-Object Text.UTF8Encoding $false))
@@ -12,13 +12,13 @@ $pattern='(?si)#\s*GitHub520\s+Host\s+Start.*?#\s*GitHub520\s+Host\s+End'
 $m=[regex]::Match($old,$pattern)
 Write-Host '=============================================='
 if(-not $m.Success){
-  Write-Host '¼ì²é½á¹û£ºµ±Ç° hosts ÖÐ¡¾²»´æÔÚ¡¿GitHub520 ÅäÖÃ¡£' -ForegroundColor Yellow
-  Write-Host 'ÌáÊ¾£º¿ÉË«»÷ÔËÐÐ¡¸GitHub520Ò»¼ü¸üÐÂhosts.bat¡¹Ìí¼Ó¡£'
+  Write-Host 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç° hosts ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¡ï¿½GitHub520 ï¿½ï¿½ï¿½Ã¡ï¿½' -ForegroundColor Yellow
+  Write-Host 'ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½GitHub520Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½hosts.batï¿½ï¿½ï¿½ï¿½Ó¡ï¿½'
 } else {
-  Write-Host '¼ì²é½á¹û£ºµ±Ç° hosts ÖÐ¡¾´æÔÚ¡¿GitHub520 ÅäÖÃ¡£' -ForegroundColor Green
+  Write-Host 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç° hosts ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½Ú¡ï¿½GitHub520 ï¿½ï¿½ï¿½Ã¡ï¿½' -ForegroundColor Green
   $block=$m.Value
   $lines=@($block -split '\r?\n' | Where-Object { $_ -match '^\s*\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\s' })
-  Write-Host ('IP ¼ÇÂ¼ÌõÊý: ' + $lines.Count)
+  Write-Host ('IP ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½: ' + $lines.Count)
   $timeLine=@($block -split '\r?\n' | Where-Object { $_ -match 'Update time' } | Select-Object -First 1)
   if($timeLine.Count -gt 0 -and $timeLine[0]){ Write-Host ($timeLine[0].Trim()) }
   $domains=@()
@@ -29,17 +29,17 @@ if(-not $m.Success){
     }
   }
   $uniq=@($domains | Sort-Object -Unique)
-  Write-Host ('¸²¸ÇÓòÃûÊýÁ¿: ' + $uniq.Count)
+  Write-Host ('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ' + $uniq.Count)
   $key=@('github.com','api.github.com','codeload.github.com','raw.githubusercontent.com','gist.github.com','github.githubassets.com','objects.githubusercontent.com')
   $missing=@($key | Where-Object { $uniq -notcontains $_ })
   if($missing.Count -eq 0){
-    Write-Host '¹Ø¼üÓòÃû¸²¸Ç: È«²¿¸²¸Ç' -ForegroundColor Green
+    Write-Host 'ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½' -ForegroundColor Green
   } else {
-    Write-Host ('¹Ø¼üÓòÃûÈ±Ê§: ' + ($missing -join ', ')) -ForegroundColor Yellow
+    Write-Host ('ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½È±Ê§: ' + ($missing -join ', ')) -ForegroundColor Yellow
   }
 }
 Write-Host '=============================================='
 "
 echo.
-echo ¼ì²é½áÊø£¬°´ÈÎÒâ¼üÍË³ö¡£
+echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½
 pause >nul
